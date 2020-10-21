@@ -62,5 +62,5 @@ class SSMWrapper:
         subprocess.call(params)
 
 
-if __name__ == "__main__":
+def main():
     SSMWrapper().ssh()
