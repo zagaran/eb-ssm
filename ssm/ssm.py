@@ -1,9 +1,11 @@
 import argparse
 import subprocess
+import sys
 
 from cement.utils.misc import minimal_logger
 from ebcli.core import io
 from ebcli.lib import aws, utils
+from ebcli.objects.exceptions import EBCLIException
 from ebcli.operations.commonops import (get_current_branch_environment, get_default_profile,
                                         get_default_region, get_instance_ids)
 
@@ -15,9 +17,34 @@ class SSMWrapper:
     def __init__(self):
         args = self._parse_args()
         
-        self.environment_name = args.environment_name or get_current_branch_environment()
-        self.profile = args.profile or get_default_profile()
-        self.region = args.region or get_default_region()
+        self.environment_name = self._raise_if_none(
+            args.environment_name,
+            get_current_branch_environment(),
+            "Please specify a target environment in the command or eb configuration.",
+        )
+        self.profile = self._raise_if_none(
+            args.profile,
+            get_default_profile(),
+            "Please specify a specific profile in the command or eb configuration.",
+        )
+        self.region = self._raise_if_none(
+            args.region,
+            get_default_region(),
+            "Please specify a specific region in the command or eb configuration.",
+        )
+    
+    def _raise_if_none(self, value, default_value, error_message):
+        """
+        Return value if it is not None. If value is None, return default_value if it is not None.
+        If default_Value is also None, raise an error.
+        """
+        if value is not None:
+            return value
+        elif default_value is not None:
+            return default_value
+        else:
+            io.log_error(error_message)
+            sys.exit()
     
     def _parse_args(self):
         parser = argparse.ArgumentParser(description="SSH onto an Elastic Beanstalk Server")
@@ -63,4 +90,8 @@ class SSMWrapper:
 
 
 def main():
-    SSMWrapper().ssh()
+    try:
+        SSMWrapper().ssh()
+    except EBCLIException as e:
+        io.log_error(e)
+        sys.exit()
