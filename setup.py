@@ -13,7 +13,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    description="Small tool to SSH into an Elastic Beanstalk server using AWS SSM.",
+    description="Simple tool to SSH into an Elastic Beanstalk server using AWS SSM.",
     entry_points={
         "console_scripts": ["eb-ssm=ssm:main"],
     },
