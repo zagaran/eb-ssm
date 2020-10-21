@@ -64,3 +64,7 @@ class SSMWrapper:
 
 def main():
     SSMWrapper().ssh()
+
+
+if __name__ == "__main__":
+    main()
