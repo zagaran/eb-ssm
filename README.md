@@ -32,7 +32,11 @@ The following steps need to be done once per computer.
 
 Install eb-ssm via `pip install eb-ssm`.
 
-Once it is installed, all you need to do is run `eb-ssm` from your repository and it will automatically hook into your repository's EB configuration (in .elasticbeanstalk/config.yml).  You can optionally pass parameters to eb-ssm.  See `eb-ssm --help` for a full list of options.
+Once it is installed, all you need to do is run `eb-ssm` from your repository and it will automatically hook into your repository's EB configuration (in .elasticbeanstalk/config.yml).
+
+To ssh into a specific environment, use `eb-ssm ENVIRONMENT_NAME`.
+
+You can also optionally pass other parameters, such as an AWS CLI profile or a region to eb-ssm.  See `eb-ssm --help` for a full list of options.
 
 ## Config
 
