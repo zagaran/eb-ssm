@@ -54,7 +54,7 @@ class SSMWrapper:
         params = [
             "aws", "ssm", "start-session",
             "--document-name", "AWS-StartInteractiveCommand",
-            "--parameters", "command='bash -l'"
+            "--parameters", "command='bash -l'",
             "--profile", self.profile,
             "--region", self.region,
             "--target", instance,
