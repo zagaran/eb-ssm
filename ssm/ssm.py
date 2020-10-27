@@ -1,5 +1,5 @@
 import argparse
-import subprocess
+import os
 import sys
 
 from cement.utils.misc import minimal_logger
@@ -32,20 +32,7 @@ class SSMWrapper:
             get_default_region(),
             "Please specify a specific region in the command or eb configuration.",
         )
-    
-    def _raise_if_none(self, value, default_value, error_message):
-        """
-        Return value if it is not None. If value is None, return default_value if it is not None.
-        If default_Value is also None, raise an error.
-        """
-        if value is not None:
-            return value
-        elif default_value is not None:
-            return default_value
-        else:
-            io.log_error(error_message)
-            sys.exit()
-    
+
     def _parse_args(self):
         parser = argparse.ArgumentParser(description="SSH onto an Elastic Beanstalk Server")
         parser.add_argument(
@@ -65,6 +52,19 @@ class SSMWrapper:
             help="use a specific region",
         )
         return parser.parse_args()
+    
+    def _raise_if_none(self, value, default_value, error_message):
+        """
+        Return value if it is not None. If value is None, return default_value if it is not None.
+        If default_Value is also None, raise an error.
+        """
+        if value is not None:
+            return value
+        elif default_value is not None:
+            return default_value
+        else:
+            io.log_error(error_message)
+            sys.exit()
         
     def ssh(self):
         aws.set_region(self.region)
@@ -86,7 +86,8 @@ class SSMWrapper:
             "--region", self.region,
             "--target", instance,
         ]
-        subprocess.call(params)
+
+        os.system(" ".join(params))
 
 
 def main():
@@ -95,3 +96,7 @@ def main():
     except EBCLIException as e:
         io.log_error(e)
         sys.exit()
+
+
+if __name__ == '__main__':
+    main()
