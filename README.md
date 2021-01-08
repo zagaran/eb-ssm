@@ -2,13 +2,20 @@
 
 This simple script helps you SSH into an Elastic Beanstalk server using AWS SSM.
 
-While `eb ssh` exists, it requires each individual user to have the EC2 instance private keys locally. This is unideal
-from both an information security and access management standpoint. If you've configured SSM, users will no longer need
-the EC2 instance private keys to SSH into Elastic Beanstalk instances and instead have their access managed via IAM.
-
 eb-ssm is desinged to combine tools from the EB CLI and the AWS CLI to provide a better alternaitve to `eb ssh`.
 
+It's a pip library, installed by `pip install eb-ssm`.
+
+Once it's set up, you can SSH into your Elastic Beanstalk servers with `eb-ssm [environment_name]`.
+
+
 ## Why you should use it
+
+While `eb ssh` exists, it requires each individual user to have the EC2 instance private keys locally. This is unideal
+from both an information security and access management standpoint. If you've configured SSM, users will no longer need
+SSH keys to SSH into Elastic Beanstalk instances and instead have their access managed via IAM.
+
+The main advantages of eb-ssm are the following:
 
 1. **Server SSH access is managed through IAM.**  Normally, you have to manage SSH access to Elastic Beanstalk environments yourself.  IAM is where AWS manages user access for everything else, and with eb-ssm, you can manage server SSH access for EB environments there as well.
 
