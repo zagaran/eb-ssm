@@ -8,6 +8,19 @@ the EC2 instance private keys to SSH into Elastic Beanstalk instances and instea
 
 eb-ssm is desinged to combine tools from the EB CLI and the AWS CLI to provide a better alternaitve to `eb ssh`.
 
+## Why you should use it
+
+1. **Server SSH access is managed through IAM.**  Normally, you have to manage SSH access to Elastic Beanstalk environments yourself.  IAM is where AWS manages user access for everything else, and with eb-ssm, you can manage server SSH access for EB environments there as well.
+
+2. **No shared SSH keys.**  Sharing, tracking, and rotating SSH keys is a pain.  Using eb-ssm, you there are no SSH keys, so these problems go away.
+
+3. **No mucking around with port 22.**  The EB CLI is supposed to open port 22 just for the SSH session but it doesn't close it in the event of non-graceful termination of the SSH session.  eb-ssm does one better by never opening port 22 in the first place.
+
+4. **Audit log of SSH sessions.**  AWS SSM keeps a log of SSH sessions.  This is one more benefit that comes from using it over native SSH.
+
+5. **Ability to access non-public servers.**  If you have servers in a privative subnet, you can use eb-ssm to SSH into them without needing a bastion host.
+
+
 ## Prerequisites
 
 ### Set up your Elastic Beanstalk Environment to allow SSH via AWS SSM
