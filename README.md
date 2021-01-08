@@ -6,7 +6,7 @@ eb-ssm is desinged to combine tools from the EB CLI and the AWS CLI to provide a
 
 It's a pip library, installed by `pip install eb-ssm`.
 
-Once it's set up, you can SSH into your Elastic Beanstalk servers with `eb-ssm [environment_name]`.
+Once it's set up, you can SSH into your Elastic Beanstalk servers with `eb-ssm [ENVIRONMENT_NAME]`.
 
 
 ## Why you should use it
