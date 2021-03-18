@@ -40,6 +40,8 @@ The following steps need to be done once per environment.
 
 3. Go to Systems Manager > Session Manager > Preferences > Edit.  Enable "Run As Support" and set the "Run As Defualt User" to be "ec2-user" (or whatever the default user for your Elastic Beanstalk servers is).
 
+Note that it may take some time (~10 minutes) for the IAM changes to propagate.  If you have completed the AWS setup and get a "TargetNotConnected" error, wait 10-15 minutes and try again.
+
 ### Configure your local computer
 
 The following steps need to be done once per computer.
