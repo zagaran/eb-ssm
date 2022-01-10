@@ -5,10 +5,10 @@ import sys
 from cement.utils.misc import minimal_logger
 from ebcli.core import io
 from ebcli.lib import aws, utils
+from ebcli.lib.elasticbeanstalk import get_all_environment_names
 from ebcli.objects.exceptions import EBCLIException
 from ebcli.operations.commonops import (get_current_branch_environment, get_default_profile,
-                                        get_default_region, get_instance_ids)
-
+    get_default_region, get_instance_ids)
 
 LOG = minimal_logger(__name__)
 
@@ -17,11 +17,8 @@ class SSMWrapper:
     def __init__(self):
         args = self._parse_args()
         
-        self.environment_name = self._raise_if_none(
-            args.environment_name,
-            get_current_branch_environment(),
-            "Please specify a target environment in the command or eb configuration.",
-        )
+        # environment_name may be None
+        self.environment_name = args.environment_name or get_current_branch_environment()
         self.profile = self._raise_if_none(
             args.profile,
             get_default_profile(),
@@ -65,10 +62,20 @@ class SSMWrapper:
         else:
             io.log_error(error_message)
             sys.exit()
-        
+    
     def ssh(self):
         aws.set_region(self.region)
         aws.set_profile(self.profile)
+        
+        if self.environment_name is None:
+            environment_names = get_all_environment_names()
+            if environment_names:
+                error = "Please chose one of the following environment names:\n\n"
+                error += "\n".join(sorted(environment_names)) + "\n"
+                io.log_error(error)
+            else:
+                io.log_error("The current Elastic Beanstalk application has no environments")
+            sys.exit()
         
         instances = get_instance_ids(self.environment_name)
         if len(instances) == 1:
@@ -86,7 +93,7 @@ class SSMWrapper:
             "--region", self.region,
             "--target", instance,
         ]
-
+        
         os.system(" ".join(params))
 
 

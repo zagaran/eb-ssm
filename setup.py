@@ -15,7 +15,7 @@ setuptools.setup(
     ],
     description="Simple tool to SSH into an Elastic Beanstalk server using AWS SSM.",
     entry_points={
-        "console_scripts": ["eb-ssm=ssm.ssm:main"],
+        "console_scripts": ["eb-ssm=eb_ssm.eb_ssm:main"],
     },
     install_requires=["awsebcli"],
     keywords="aws eb ssm elastic beanstalk systems manager agent ssh",
@@ -26,5 +26,5 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
     url="https://github.com/zagaran/eb-ssm",
-    version="1.0.5",
+    version="1.1.0",
 )
