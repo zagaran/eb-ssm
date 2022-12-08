@@ -16,7 +16,7 @@ LOG = minimal_logger(__name__)
 class SSMWrapper:
     def __init__(self):
         args = self._parse_args()
-        
+
         # environment_name may be None
         self.environment_name = args.environment_name or get_current_branch_environment()
         self.profile = self._raise_if_none(
@@ -29,6 +29,11 @@ class SSMWrapper:
             get_default_region(),
             "Please specify a specific region in the command or eb configuration.",
         )
+
+        self.command = args.command or "bash -l"
+
+        self.non_interactive = args.non_interactive == 'True'
+
 
     def _parse_args(self):
         parser = argparse.ArgumentParser(description="SSH onto an Elastic Beanstalk Server")
@@ -48,8 +53,18 @@ class SSMWrapper:
             default=None,
             help="use a specific region",
         )
+        parser.add_argument(
+            "-c", "--command",
+            default=None,
+            help="command to execute",
+        )
+        parser.add_argument(
+            "-n", "--non-interactive",
+            default=False,
+            help="Do not ask any questions, minimize output",
+        )
         return parser.parse_args()
-    
+
     def _raise_if_none(self, value, default_value, error_message):
         """
         Return value if it is not None. If value is None, return default_value if it is not None.
@@ -62,11 +77,11 @@ class SSMWrapper:
         else:
             io.log_error(error_message)
             sys.exit()
-    
+
     def ssh(self):
         aws.set_region(self.region)
         aws.set_profile(self.profile)
-        
+
         if self.environment_name is None:
             environment_names = get_all_environment_names()
             if environment_names:
@@ -76,25 +91,42 @@ class SSMWrapper:
             else:
                 io.log_error("The current Elastic Beanstalk application has no environments")
             sys.exit()
-        
+
         instances = get_instance_ids(self.environment_name)
-        if len(instances) == 1:
+        if len(instances) == 1 or self.non_interactive is True:
             instance = instances[0]
         else:
             io.echo()
             io.echo('Select an instance to ssh into')
             instance = utils.prompt_for_item_in_list(instances)
-        
+
         params = [
             "aws", "ssm", "start-session",
             "--document-name", "AWS-StartInteractiveCommand",
-            "--parameters", "command='bash -l'",
+            "--parameters", "command='" + self.command + "'",
             "--profile", self.profile,
             "--region", self.region,
             "--target", instance,
         ]
-        
-        os.system(" ".join(params))
+        cmd = " ".join(params)
+
+        # Filter the output of os.system(cmd to remove strange output from Session Manager in non_interactive mode.
+        # The output might begin with:
+        #
+        # Starting session with SessionId: [id]
+        #
+        # and end with:
+        # Exiting session with sessionId:  [id].
+        # @see https://github.com/aws/session-manager-plugin/pull/20
+        # @see https://github.com/aws/amazon-ssm-agent/issues/358
+        if self.non_interactive is True:
+            # A strange workaround until we have the PRs above.
+            output = os.popen(cmd).read()
+            output = output.splitlines()
+            output = output[2:-4]
+            print("\n".join(output))
+        else:
+            os.system(cmd)
 
 
 def main():
