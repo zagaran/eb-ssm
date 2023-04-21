@@ -33,7 +33,7 @@ class SSMWrapper:
 
         self.command = args.command or DEFAULT_COMMAND
 
-        self.non_interactive = args.non_interactive == 'True'
+        self.instance_number = args.number
 
 
     def _parse_args(self):
@@ -60,9 +60,9 @@ class SSMWrapper:
             help="command to execute",
         )
         parser.add_argument(
-            "-n", "--non-interactive",
-            default=False,
-            help="Do not ask any questions, minimize output",
+            "-n", "--number",
+            default=None,
+            help="Specify the instance to connect to by number.",
         )
         return parser.parse_args()
 
@@ -94,8 +94,11 @@ class SSMWrapper:
             sys.exit()
 
         instances = get_instance_ids(self.environment_name)
-        if len(instances) == 1 or self.non_interactive is True:
-            instance = instances[0]
+        if len(instances) == 1:
+          self.instance_number = 0
+
+        if self.instance_number is not None:
+            instance = instances[int(self.instance_number)]
         else:
             io.echo()
             io.echo('Select an instance to ssh into')
