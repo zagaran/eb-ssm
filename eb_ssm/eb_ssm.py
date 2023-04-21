@@ -110,23 +110,7 @@ class SSMWrapper:
         ]
         cmd = " ".join(params)
 
-        # Filter the output of os.system(cmd to remove strange output from Session Manager in non_interactive mode.
-        # The output might begin with:
-        #
-        # Starting session with SessionId: [id]
-        #
-        # and end with:
-        # Exiting session with sessionId:  [id].
-        # @see https://github.com/aws/session-manager-plugin/pull/20
-        # @see https://github.com/aws/amazon-ssm-agent/issues/358
-        if self.non_interactive is True:
-            # A strange workaround until we have the PRs above.
-            output = os.popen(cmd).read()
-            output = output.splitlines()
-            output = output[2:-4]
-            print("\n".join(output))
-        else:
-            os.system(cmd)
+        os.system(cmd)
 
 
 def main():
