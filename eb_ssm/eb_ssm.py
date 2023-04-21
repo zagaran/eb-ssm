@@ -11,6 +11,7 @@ from ebcli.operations.commonops import (get_current_branch_environment, get_defa
     get_default_region, get_instance_ids)
 
 LOG = minimal_logger(__name__)
+DEFAULT_COMMAND="bash -l"
 
 
 class SSMWrapper:
@@ -30,7 +31,7 @@ class SSMWrapper:
             "Please specify a specific region in the command or eb configuration.",
         )
 
-        self.command = args.command or "bash -l"
+        self.command = args.command or DEFAULT_COMMAND
 
         self.non_interactive = args.non_interactive == 'True'
 
