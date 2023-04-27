@@ -11,12 +11,13 @@ from ebcli.operations.commonops import (get_current_branch_environment, get_defa
     get_default_region, get_instance_ids)
 
 LOG = minimal_logger(__name__)
+DEFAULT_COMMAND="bash -l"
 
 
 class SSMWrapper:
     def __init__(self):
         args = self._parse_args()
-        
+
         # environment_name may be None
         self.environment_name = args.environment_name or get_current_branch_environment()
         self.profile = self._raise_if_none(
@@ -29,6 +30,11 @@ class SSMWrapper:
             get_default_region(),
             "Please specify a specific region in the command or eb configuration.",
         )
+
+        self.command = args.command or DEFAULT_COMMAND
+
+        self.instance_number = args.number
+
 
     def _parse_args(self):
         parser = argparse.ArgumentParser(description="SSH onto an Elastic Beanstalk Server")
@@ -48,8 +54,18 @@ class SSMWrapper:
             default=None,
             help="use a specific region",
         )
+        parser.add_argument(
+            "-c", "--command",
+            default=None,
+            help="command to execute",
+        )
+        parser.add_argument(
+            "-n", "--number",
+            default=None,
+            help="Specify the instance to connect to by number.",
+        )
         return parser.parse_args()
-    
+
     def _raise_if_none(self, value, default_value, error_message):
         """
         Return value if it is not None. If value is None, return default_value if it is not None.
@@ -62,11 +78,11 @@ class SSMWrapper:
         else:
             io.log_error(error_message)
             sys.exit()
-    
+
     def ssh(self):
         aws.set_region(self.region)
         aws.set_profile(self.profile)
-        
+
         if self.environment_name is None:
             environment_names = get_all_environment_names()
             if environment_names:
@@ -76,25 +92,29 @@ class SSMWrapper:
             else:
                 io.log_error("The current Elastic Beanstalk application has no environments")
             sys.exit()
-        
+
         instances = get_instance_ids(self.environment_name)
         if len(instances) == 1:
-            instance = instances[0]
+          self.instance_number = 0
+
+        if self.instance_number is not None:
+            instance = instances[int(self.instance_number)]
         else:
             io.echo()
             io.echo('Select an instance to ssh into')
             instance = utils.prompt_for_item_in_list(instances)
-        
+
         params = [
             "aws", "ssm", "start-session",
             "--document-name", "AWS-StartInteractiveCommand",
-            "--parameters", "command='bash -l'",
+            "--parameters", "command='" + self.command + "'",
             "--profile", self.profile,
             "--region", self.region,
             "--target", instance,
         ]
-        
-        os.system(" ".join(params))
+        cmd = " ".join(params)
+
+        os.system(cmd)
 
 
 def main():
