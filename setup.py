@@ -26,5 +26,5 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
     url="https://github.com/zagaran/eb-ssm",
-    version="1.1.0",
+    version="1.2.0",
 )
