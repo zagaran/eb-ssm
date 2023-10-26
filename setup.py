@@ -17,7 +17,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": ["eb-ssm=eb_ssm.eb_ssm:main"],
     },
-    install_requires=["awsebcli"],
+    install_requires=["awsebcli>=3.14.0"],
     keywords="aws eb ssm elastic beanstalk systems manager agent ssh",
     license="MIT",
     long_description=README,
@@ -26,5 +26,5 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
     url="https://github.com/zagaran/eb-ssm",
-    version="1.2.0",
+    version="1.2.1",
 )
