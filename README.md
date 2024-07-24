@@ -34,7 +34,7 @@ The main advantages of eb-ssm are the following:
 
 The following steps need to be done once per environment.
 
-1. Go to Elastic Beanstalk > ENVIRONEMNT_NAME > Configuration > Security and find the "IAM instance profile" (by default, this is "aws-elasticbeanstalk-ec2-role").  This is ROLE_NAME in step 2.
+1. Go to Elastic Beanstalk > ENVIRONMENT_NAME > Configuration > Security and find the "IAM instance profile" (by default, this is "aws-elasticbeanstalk-ec2-role").  This is ROLE_NAME in step 2.
 
 2. Go to IAM > Roles > ROLE_NAME.  Under permissions, add "AmazonSSMManagedInstanceCore".
 
