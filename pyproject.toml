@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "eb-ssm"
 version = "1.3.0"
 authors = [{name = "Zagaran", email = "info@zagaran.com"}, {name = "Inc."}]
-license = {text = "MIT"}
+license = "MIT"
 description = "Simple tool to SSH into an Elastic Beanstalk server using AWS SSM."
 keywords = [
     "aws",
@@ -21,7 +21,6 @@ keywords = [
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 urls = {Homepage = "https://github.com/zagaran/eb-ssm"}
