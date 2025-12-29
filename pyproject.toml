@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eb-ssm"
+version = "1.3.0"
+authors = [{name = "Zagaran", email = "info@zagaran.com"}, {name = "Inc."}]
+license = {text = "MIT"}
+description = "Simple tool to SSH into an Elastic Beanstalk server using AWS SSM."
+keywords = [
+    "aws",
+    "eb",
+    "ssm",
+    "elastic",
+    "beanstalk",
+    "systems",
+    "manager",
+    "agent",
+    "ssh",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+urls = {Homepage = "https://github.com/zagaran/eb-ssm"}
+requires-python = ">=3.6"
+dependencies = ["awsebcli>=3.14.0"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.scripts]
+eb-ssm = "eb_ssm.eb_ssm:main"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages]
+find = {namespaces = false}
