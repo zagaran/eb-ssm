@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "eb-ssm"
 version = "1.3.0"
-authors = [{name = "Zagaran", email = "info@zagaran.com"}, {name = "Inc."}]
+authors = [{name = "Zagaran, Inc.", email = "info@zagaran.com"}]
 license = "MIT"
 description = "Simple tool to SSH into an Elastic Beanstalk server using AWS SSM."
 keywords = [
